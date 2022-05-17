@@ -18,9 +18,7 @@ namespace Application.Commands.Product.Create
             {
                 Name = request.Name,
                 Price = request.Price,
-                Stock = request.Stock,
-                CreatedDate = DateTimeOffset.Now,
-                Creator = "MP"
+                Stock = request.Stock               
             };
             await _productRepository.AddAsync(product);
             return product.Id;

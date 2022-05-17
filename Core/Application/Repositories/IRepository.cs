@@ -13,6 +13,6 @@ namespace Application.Repositories
         Task AddRangeAsync(List<TEntity> entities);
         Task<bool> RemoveByFilterAsync(Expression<Func<TEntity, bool>> filter);
         Task<bool> RemoveByIdAsync(string id);
-        Task<bool> UpdateAsync(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
     }
 }

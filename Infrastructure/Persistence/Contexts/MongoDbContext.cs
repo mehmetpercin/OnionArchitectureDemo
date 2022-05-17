@@ -16,9 +16,5 @@ namespace Persistence.Contexts
         {
             return _database.GetCollection<TEntity>(typeof(TEntity).Name.Trim());
         }
-        public IMongoDatabase GetDatabase()
-        {
-            return _database;
-        }
     }
 }

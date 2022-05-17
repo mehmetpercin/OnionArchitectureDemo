@@ -1,6 +1,7 @@
 ﻿using Application.Repositories;
 using Domain.Entities.Common;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Persistence.Contexts;
 using Persistence.Settings;
@@ -20,11 +21,19 @@ namespace Persistence.Repositories
 
         public async Task AddAsync(TEntity entity)
         {
+            entity.CreatedDate = DateTimeOffset.Now;
+            entity.Creator = "MP";
             await _collection.InsertOneAsync(entity);
         }
 
         public async Task AddRangeAsync(List<TEntity> entities)
         {
+            var now = DateTimeOffset.Now;
+            foreach (var entity in entities)
+            {
+                entity.CreatedDate = now;
+                entity.Creator = "MP";
+            }
             await _collection.InsertManyAsync(entities);
         }
 
@@ -35,7 +44,8 @@ namespace Persistence.Repositories
 
         public async Task<TEntity> GetByIdAsync(string id)
         {
-            var filter = Builders<TEntity>.Filter.Eq("_id", id);
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<TEntity>.Filter.Eq("_id", objectId);
             var data = await _collection.FindAsync(filter);
             return await data.FirstOrDefaultAsync();
         }
@@ -60,16 +70,20 @@ namespace Persistence.Repositories
 
         public async Task<bool> RemoveByIdAsync(string id)
         {
-            var filter = Builders<TEntity>.Filter.Eq("_id", id);
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<TEntity>.Filter.Eq("_id", objectId);
             var deletedDocument = await _collection.FindOneAndDeleteAsync(filter);
             return deletedDocument != null;
         }
 
-        public async Task<bool> UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            var filter = Builders<TEntity>.Filter.Eq("_id", entity.Id);
-            var updatedDocument = await _collection.ReplaceOneAsync(filter, entity);
-            return updatedDocument.IsModifiedCountAvailable;
+            entity.ModifiedDate = DateTimeOffset.Now;
+            entity.Modifier = "MP";
+            var objectId = ObjectId.Parse(entity.Id);
+            var filter = Builders<TEntity>.Filter.Eq("_id", objectId);
+            await _collection.FindOneAndReplaceAsync(filter,entity);
+            return entity;
         }
     }
 }
