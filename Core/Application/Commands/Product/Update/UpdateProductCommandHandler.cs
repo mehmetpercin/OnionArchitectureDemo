@@ -2,27 +2,22 @@
 using Application.Queries.Product;
 using Application.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Commands.Product.Update
 {
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, ProductResponse>
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductWriteRepository _productWriteRepository;
 
-        public UpdateProductCommandHandler(IProductRepository productRepository)
+        public UpdateProductCommandHandler(IProductWriteRepository productWriteRepository)
         {
-            _productRepository = productRepository;
+            _productWriteRepository = productWriteRepository;
         }
 
         public async Task<ProductResponse> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             var product = ObjectMapper.Mapper.Map<Domain.Entities.Product>(request);
-            var result = await _productRepository.UpdateAsync(product);
+            var result = await _productWriteRepository.UpdateAsync(product);
             return ObjectMapper.Mapper.Map<ProductResponse>(result);
         }
     }

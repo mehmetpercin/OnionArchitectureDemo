@@ -2,7 +2,7 @@
 
 namespace Application.Repositories
 {
-    public interface IProductRepository : IRepository<Product>
+    public interface IProductReadRepository : IReadRepository<Product>
     {
     }
 }

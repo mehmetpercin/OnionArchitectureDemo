@@ -5,9 +5,9 @@ using Persistence.Settings;
 
 namespace Persistence.Repositories
 {
-    public class ProductRepository : Repository<Product>, IProductRepository
+    public class ProductWriteRepository : WriteRepository<Product>, IProductWriteRepository
     {
-        public ProductRepository(IOptions<DatabaseSettings> settings) : base(settings)
+        public ProductWriteRepository(IOptions<DatabaseSettings> settings) : base(settings)
         {
 
         }

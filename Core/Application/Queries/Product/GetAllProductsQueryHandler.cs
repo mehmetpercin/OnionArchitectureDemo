@@ -7,9 +7,9 @@ namespace Application.Queries.Product
 {
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, PageableResponse<List<ProductResponse>>>
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductReadRepository _productRepository;
 
-        public GetAllProductsQueryHandler(IProductRepository productRepository)
+        public GetAllProductsQueryHandler(IProductReadRepository productRepository)
         {
             _productRepository = productRepository;
         }

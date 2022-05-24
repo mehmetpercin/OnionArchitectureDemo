@@ -5,16 +5,16 @@ namespace Application.Commands.Product.Delete
 {
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand>
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductWriteRepository _productWriteRepository;
 
-        public DeleteProductCommandHandler(IProductRepository productRepository)
+        public DeleteProductCommandHandler(IProductWriteRepository productWriteRepository)
         {
-            _productRepository = productRepository;
+            _productWriteRepository = productWriteRepository;
         }
 
         public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            await _productRepository.RemoveByIdAsync(request.Id);
+            await _productWriteRepository.RemoveByIdAsync(request.Id);
             return await Task.FromResult(Unit.Value);
         }
     }

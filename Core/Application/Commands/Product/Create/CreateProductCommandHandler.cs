@@ -1,15 +1,19 @@
 ﻿using Application.Repositories;
+using Domain.Events;
+using MassTransit;
 using MediatR;
 
 namespace Application.Commands.Product.Create
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, string>
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductWriteRepository _productWriteRepository;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public CreateProductCommandHandler(IProductRepository productRepository)
+        public CreateProductCommandHandler(IProductWriteRepository productWriteRepository, IPublishEndpoint publishEndpoint)
         {
-            _productRepository = productRepository;
+            _productWriteRepository = productWriteRepository;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -18,9 +22,18 @@ namespace Application.Commands.Product.Create
             {
                 Name = request.Name,
                 Price = request.Price,
-                Stock = request.Stock               
+                Stock = request.Stock
             };
-            await _productRepository.AddAsync(product);
+            await _productWriteRepository.AddAsync(product);
+            var productCreatedEvent = new ProductCreatedEvent
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock
+            };
+
+            await _publishEndpoint.Publish(productCreatedEvent, cancellationToken);
             return product.Id;
         }
     }
