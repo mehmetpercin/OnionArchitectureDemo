@@ -1,1 +1,1 @@
-Example project with Onion Architecture, CQRS , MongoDB.
+Example project with Onion Architecture, CQRS , MongoDB, PostgreSQL, RabbitMQ .
