@@ -1,11 +1,12 @@
-﻿using Application.Repositories;
+﻿using Application.Dtos;
+using Application.Repositories;
 using Domain.Events;
 using MassTransit;
 using MediatR;
 
 namespace Application.Commands.Product.Create
 {
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, string>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Dtos.Response<string>>
     {
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IPublishEndpoint _publishEndpoint;
@@ -16,7 +17,7 @@ namespace Application.Commands.Product.Create
             _publishEndpoint = publishEndpoint;
         }
 
-        public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Dtos.Response<string>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var product = new Domain.Entities.Product
             {
@@ -34,7 +35,7 @@ namespace Application.Commands.Product.Create
             };
 
             await _publishEndpoint.Publish(productCreatedEvent, cancellationToken);
-            return product.Id;
+            return SuccessResponse<string>.Success(product.Id, 200);
         }
     }
 }

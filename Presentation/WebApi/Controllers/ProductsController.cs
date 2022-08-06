@@ -9,7 +9,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController : CustomBaseController
     {
         private readonly IMediator _mediator;
 
@@ -25,9 +25,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]CreateProductCommand request)
-        {        
-            return Ok(await _mediator.Send(request));
+        public async Task<IActionResult> Create([FromBody] CreateProductCommand request)
+        {
+            return CreateActionResultInstance(await _mediator.Send(request));
         }
 
         [HttpDelete]
